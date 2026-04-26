@@ -1,0 +1,20 @@
+[
+  {
+    "n_samples": 501,
+    "psi_mean": 7.8858,
+    "drifted_features": [
+      "syn_flag_number",
+      "flow_duration",
+      "syn_count",
+      "Variance",
+      "urg_count"
+    ],
+    "alert_status": {
+      "alert_rate": 1.0,
+      "baseline_mean": 1.0,
+      "z_score": null,
+      "status": "OK"
+    },
+    "drift_status": "DRIFTED"
+  }
+]

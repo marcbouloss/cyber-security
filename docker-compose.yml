@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  ids-api:
+    build: .
+    image: marcboulos/iot-ids:latest
+    container_name: iot-ids-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./saved_models:/app/saved_models
+      - ./data/processed:/app/data/processed
+      - ./reports:/app/reports
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped

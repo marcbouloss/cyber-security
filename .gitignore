@@ -1,0 +1,17 @@
+data/raw/
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+.env
+*.egg-info/
+dist/
+build/
+.DS_Store
+.claude/
+one_page_report.pdf
+
+# Random Forest model is too large for GitHub (>100 MB even compressed)
+# All RF results are saved in reports/ (confusion matrix, PR curve, feature importance)
+# LightGBM handles all API predictions — RF is not needed to run the system
+saved_models/random_forest.pkl
