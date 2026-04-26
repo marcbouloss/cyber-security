@@ -1,4 +1,4 @@
-## Karl Nguyen Van Doan
+### Karl Nguyen Van Doan
 
 - Implemented the Logistic Regression baseline model (`src/models/baseline.py`)
 - Designed and trained the PyTorch MLP neural network with custom architecture (`src/models/mlp.py`)
