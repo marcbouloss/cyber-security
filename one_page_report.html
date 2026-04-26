@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Times New Roman', serif;
+    font-size: 11.5pt;
+    line-height: 1.45;
+    color: #111;
+    width: 750px;
+    margin: 36px auto;
+    padding: 0 20px;
+  }
+  h1 {
+    font-size: 15pt;
+    text-align: center;
+    margin-bottom: 4px;
+    letter-spacing: 0.3px;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 10.5pt;
+    color: #444;
+    margin-bottom: 10px;
+  }
+  .members {
+    text-align: center;
+    font-size: 10.5pt;
+    margin-bottom: 14px;
+  }
+  hr { border: none; border-top: 1.5px solid #222; margin-bottom: 12px; }
+  h2 {
+    font-size: 11.5pt;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    border-bottom: 1px solid #aaa;
+    padding-bottom: 2px;
+    margin-bottom: 6px;
+    margin-top: 12px;
+  }
+  p { margin-bottom: 6px; text-align: justify; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10.5pt;
+    margin-top: 6px;
+  }
+  th {
+    background: #222;
+    color: #fff;
+    padding: 4px 8px;
+    text-align: left;
+  }
+  td { padding: 3px 8px; border-bottom: 1px solid #ddd; }
+  tr:nth-child(even) td { background: #f5f5f5; }
+  .best td { font-weight: bold; }
+  @media print {
+    body { margin: 0; padding: 20px 40px; width: 100%; }
+    @page { margin: 1.5cm; }
+  }
+</style>
+</head>
+<body>
+
+<h1>IoT Network Intrusion Detection Using Machine Learning</h1>
+<div class="subtitle">Cybersecurity — Machine Learning Project Report</div>
+<div class="members">
+  <strong>Group Members:</strong> Marc Boulos &nbsp;|&nbsp; Anthony Farhat &nbsp;|&nbsp; Jad Allam &nbsp;|&nbsp; Karl Nguyen Van Doan
+</div>
+<hr>
+
+<h2>Data Source</h2>
+<p>
+  We used the <strong>CICIoT2023</strong> dataset published by the Canadian Institute for Cybersecurity (University of New Brunswick).
+  It contains labeled network traffic flows captured from real IoT devices under both normal and attack conditions,
+  spanning <strong>9 classes</strong>: Benign, DDoS, DoS, Mirai, Spoofing, Recon, Recon-HostDiscovery, Web, and DictionaryBruteForce.
+  The dataset provides 46 numerical flow-level features (packet rates, flag counts, header lengths, etc.).
+</p>
+
+<h2>Approach</h2>
+<p>
+  We built a <strong>multi-class streaming intrusion detection system (IDS)</strong> that classifies IoT network traffic flows
+  in real time and monitors for data drift. The pipeline covers data ingestion, preprocessing, model training,
+  evaluation, and deployment as a REST API served inside a Docker container.
+  We applied <strong>SMOTE</strong> to address severe class imbalance and used <strong>Macro-F1</strong> as our
+  primary metric, since accuracy is misleading on imbalanced data.
+</p>
+
+<h2>Summary of Methods</h2>
+<p>
+  <strong>Preprocessing:</strong> Stratified 70/15/15 train/val/test split, median imputation for missing values,
+  standard scaling, SMOTE oversampling on the training set only.
+</p>
+<p>
+  <strong>Models trained:</strong> Logistic Regression (baseline), Random Forest, XGBoost, LightGBM, and a
+  custom PyTorch MLP neural network. Hyperparameters were tuned on the validation set.
+</p>
+<p>
+  <strong>Deployment:</strong> The best model is served via a FastAPI REST API with endpoints for single and batch
+  prediction, confidence thresholding (fallback to Benign below 70% confidence), and live drift monitoring
+  using KS-test, PSI, and Jensen-Shannon divergence. The full system is containerised with Docker and
+  published on Docker Hub (<em>marcboulos/iot-ids:latest</em>).
+</p>
+
+<h2>Summary of Results</h2>
+<table>
+  <thead>
+    <tr><th>Model</th><th>Macro-F1</th><th>ROC-AUC</th><th>Benign FP%</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Logistic Regression</td><td>0.484</td><td>0.929</td><td>34.2%</td></tr>
+    <tr><td>Random Forest</td><td>0.808</td><td>0.994</td><td>9.5%</td></tr>
+    <tr><td>XGBoost</td><td>0.815</td><td>0.996</td><td>8.9%</td></tr>
+    <tr class="best"><td>LightGBM ★ (deployed)</td><td>0.830</td><td>0.996</td><td>8.8%</td></tr>
+    <tr><td>MLP Neural Network</td><td>0.630</td><td>0.976</td><td>24.7%</td></tr>
+  </tbody>
+</table>
+<p style="margin-top:7px;">
+  <strong>LightGBM</strong> achieved the best Macro-F1 of <strong>0.830</strong> and ROC-AUC of <strong>0.996</strong>,
+  making it the deployed model. Ensemble tree methods (LightGBM, XGBoost, Random Forest) significantly
+  outperformed the linear baseline and the neural network on this structured tabular dataset.
+  The system successfully detects all 8 attack types with a false positive rate below 9%.
+</p>
+
+</body>
+</html>
