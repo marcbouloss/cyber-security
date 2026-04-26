@@ -115,8 +115,7 @@ cybersecurity/
 ├── saved_models/               ← pre-trained models (ready to use)
 ├── reports/                    ← confusion matrices, PR curves, plots
 ├── notebooks/                  ← EDA and modeling notebooks
-├── docs/
-│   └── presentation.pptx       ← project slides
+├── ML Project PPT.pptx         ← project slides
 ├── data/processed/             ← processed dataset splits
 ├── Dockerfile
 ├── docker-compose.yml
@@ -168,7 +167,7 @@ IDS_API_KEY=$(openssl rand -hex 16) IDS_CORS_ORIGINS="https://my.app" python -m 
 | **LightGBM** ★ | **0.830** | **0.996** | **8.8%** |
 | MLP (Neural Net) | 0.630 | 0.976 | 24.7% |
 
-† `random_forest.pkl` is not included. To use Random Forest, retrain with `python -m src.train --models rf`.
+† Depth-capped (max_depth=15, 100 trees) to keep file size under 100 MB; full unlimited-depth model achieves Macro-F1 0.808 but requires retraining.
 
 **LightGBM is used for all predictions** (best Macro-F1).
 
